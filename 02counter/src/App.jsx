@@ -5,12 +5,15 @@ import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
-  let [counter,setCounter]=useState(15)
+  const [counter,setCounter]=useState(15)
   // let counter=15;
   const addvalue=()=>{
     console.log("clicked", counter);
     // counter=counter+1;
-    setCounter(counter+1)
+    setCounter((prev)=>prev+1)
+    setCounter((prev)=>prev+1)
+    setCounter((prev)=>prev+1)
+    setCounter((prev)=>prev+1)
   }
   const removevalue=()=>{
     console.log("clicked", counter);
