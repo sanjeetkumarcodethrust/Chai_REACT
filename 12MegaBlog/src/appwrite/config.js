@@ -130,6 +130,24 @@ export class Service{
             fileId
         )
     }
+
+    async updateBucketPermissions(){
+        try {
+            return await this.bucket.updateBucket(
+                conf.appwriteBucketId,
+                {
+                    name: "Blog Images", // or whatever the name is
+                    permissions: {
+                        read: ["any"], // allow anyone to read
+                        write: ["users"] // only authenticated users can upload
+                    }
+                }
+            )
+        } catch (error) {
+            console.log("Appwrite service :: updateBucketPermissions :: error", error);
+            return false
+        }
+    }
 }
 
 

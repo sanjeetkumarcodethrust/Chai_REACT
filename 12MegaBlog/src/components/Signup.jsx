@@ -15,14 +15,34 @@ function Signup() {
     const create = async(data) => {
         setError("")
         try {
-            const userData = await authService.createAccount(data)
-            if (userData) {
-                const userData = await authService.getCurrentUser()
-                if(userData) dispatch(login(userData));
-                navigate("/")
+            // Step 1: Create account (also logs in automatically)
+            const session = await authService.createAccount(data)
+            if (!session) {
+                setError("Signup failed. Please try again.")
+                return
             }
+
+            // Step 2: Get user data (this might take a moment after session creation)
+            setTimeout(async () => {
+                try {
+                    const userData = await authService.getCurrentUser()
+                    if(userData) {
+                        dispatch(login(userData));
+                        navigate("/")
+                    } else {
+                        // Even if getCurrentUser fails, session exists - navigate to home
+                        setError("")
+                        navigate("/")
+                    }
+                } catch (err) {
+                    console.error("Get user error after signup:", err);
+                    // Session was created successfully, navigate anyway
+                    navigate("/")
+                }
+            }, 500); // Small delay for session to be fully established
         } catch (error) {
-            setError(error.message)
+            console.error("Signup error:", error);
+            setError(error.message || "Signup failed. Please try again.")
         }
     }
 
@@ -62,7 +82,7 @@ function Signup() {
                         {...register("email", {
                             required: true,
                             validate: {
-                                matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                matchPattern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
                                 "Email address must be a valid address",
                             }
                         })}

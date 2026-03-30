@@ -98,12 +98,15 @@ export default function PostForm({ post }) {
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
-                {post && (
+                {post && post.featuredImage && (
                     <div className="w-full mb-4">
                         <img
                             src={appwriteService.getFilePreview(post.featuredImage)}
                             alt={post.title}
-                            className="rounded-lg"
+                            className="rounded-lg w-full h-48 object-cover"
+                            onError={(e) => {
+                                console.log('Image failed to load');
+                            }}
                         />
                     </div>
                 )}
